@@ -2,7 +2,7 @@
 # 必须修改：如果你希望主项目自动进入“简易 Worker 模式”，建议保持这个名字不变。
 # 如果改名，项目仍可通过 /api/new_address 和 /api/messages 兼容接口工作。
 # ==============================
-name = "openai-email-receiver"
+name = "team-email"
 main = "src/index.js"
 compatibility_date = "2026-04-04"
 workers_dev = true
