@@ -1,0 +1,47 @@
+# ==============================
+# 必须修改：如果你希望主项目自动进入“简易 Worker 模式”，建议保持这个名字不变。
+# 如果改名，项目仍可通过 /api/new_address 和 /api/messages 兼容接口工作。
+# ==============================
+name = "openai-email-receiver"
+main = "src/index.js"
+compatibility_date = "2026-04-04"
+workers_dev = true
+
+[vars]
+# 可选：管理页标题，可直接保留默认值。
+UI_TITLE = "Cloud Mail Bridge"
+
+# ==============================
+# 必须修改：替换成你已经在 Cloudflare Email Routing 接管的真实收件域名。
+# 例如：DEFAULT_DOMAIN = "mail.example.com"
+# ==============================
+DEFAULT_DOMAIN = "__MUST_CHANGE_TO_YOUR_MAIL_DOMAIN__"
+
+# ==============================
+# 必须修改：替换成 Cloud Mail 管理员邮箱。
+# 例如：ADMIN_EMAIL = "admin@example.com"
+# ==============================
+ADMIN_EMAIL = "__MUST_CHANGE_TO_ADMIN_EMAIL__"
+
+# ==============================
+# 必须设置：敏感信息不要写进仓库，使用下面命令写入。
+# npx wrangler secret put ADMIN_PASSWORD
+# npx wrangler secret put WORKER_ADMIN_PASSWORD
+# ==============================
+
+# ==============================
+# 推荐方式：不要在这里硬写 KV namespace id。
+# 直接去 Cloudflare 控制台给当前 Worker 添加 KV 绑定：
+# 1. Workers & Pages -> 当前 Worker -> Settings -> Bindings
+# 2. Add binding -> KV namespace
+# 3. Variable name 填：kv
+# 4. Namespace 选择你的真实 KV
+#
+# 如果你坚持用 wrangler 文件管理绑定，可手动取消下面注释，
+# 并把 id / preview_id 改成真实值：
+#
+# [[kv_namespaces]]
+# binding = "kv"
+# id = "REPLACE_WITH_REAL_KV_NAMESPACE_ID"
+# preview_id = "REPLACE_WITH_REAL_KV_PREVIEW_NAMESPACE_ID"
+# ==============================
