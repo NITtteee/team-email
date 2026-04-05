@@ -72,7 +72,7 @@ export function renderAdminPage(env) {
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif;
+      font-family: "Segoe UI Variable", "Segoe UI", "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
       color: var(--text);
       background:
         radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 28%),
@@ -138,17 +138,35 @@ export function renderAdminPage(env) {
       border-radius: 18px;
       background: var(--panel-soft);
       border: 1px solid rgba(148, 163, 184, 0.12);
+      min-height: 112px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     .stat .k {
       display: block;
       font-size: 12px;
       color: var(--muted);
-      text-transform: uppercase;
       letter-spacing: 0.08em;
       margin-bottom: 6px;
     }
     .stat .v {
       font-size: 18px;
+      font-weight: 700;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+    .stat .v-url,
+    .stat .v-domain {
+      font-family: "Cascadia Code", "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+    .stat .v-mode {
+      font-family: "Segoe UI Variable", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 15px;
       font-weight: 700;
     }
     .grid {
@@ -322,15 +340,15 @@ export function renderAdminPage(env) {
         <div class="stats">
           <div class="stat">
             <span class="k">推荐访问地址</span>
-            <span class="v" id="baseUrlValue">加载中...</span>
+            <span class="v v-url" id="baseUrlValue">加载中...</span>
           </div>
           <div class="stat">
             <span class="k">默认域名</span>
-            <span class="v">${defaultDomain}</span>
+            <span class="v v-domain">${defaultDomain}</span>
           </div>
           <div class="stat">
             <span class="k">兼容模式</span>
-            <span class="v">Worker + DuckMail + Cloud Mail</span>
+            <span class="v v-mode">Worker / DuckMail / Cloud Mail</span>
           </div>
         </div>
       </div>
