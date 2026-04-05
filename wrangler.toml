@@ -9,7 +9,7 @@ workers_dev = true
 
 [vars]
 # 可选：管理页标题，可直接保留默认值。
-UI_TITLE = "Cloud Mail Bridge"
+UI_TITLE = "Cloud Mail 邮箱桥接"
 
 # ==============================
 # 必须修改：替换成你已经在 Cloudflare Email Routing 接管的真实收件域名。

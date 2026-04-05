@@ -15,7 +15,7 @@ function isPlaceholderValue(value) {
 }
 
 export function renderAdminPage(env) {
-  const title = escapeHtml(env.UI_TITLE || "Cloud Mail Bridge");
+  const title = escapeHtml(env.UI_TITLE || "Cloud Mail 邮箱桥接");
   const defaultDomain = escapeHtml(env.DEFAULT_DOMAIN || "example.com");
   const setupWarnings = [];
   const hasKvBinding = Boolean(
@@ -25,26 +25,25 @@ export function renderAdminPage(env) {
   );
 
   if (!hasKvBinding) {
-    setupWarnings.push("必须在 Cloudflare Worker 绑定一个 KV 命名空间，变量名直接使用 kv。");
+    setupWarnings.push("必须在 Cloudflare Worker 里绑定一个 KV 命名空间，变量名建议直接使用 kv。");
   }
-
   if (isPlaceholderValue(env.DEFAULT_DOMAIN)) {
-    setupWarnings.push("必须修改 DEFAULT_DOMAIN：换成已接入 Email Routing 的真实收件域名。");
+    setupWarnings.push("必须修改 DEFAULT_DOMAIN，换成已接入 Email Routing 的真实收件域名。");
   }
   if (isPlaceholderValue(env.ADMIN_EMAIL)) {
-    setupWarnings.push("必须修改 ADMIN_EMAIL：换成真实管理员邮箱。");
+    setupWarnings.push("必须修改 ADMIN_EMAIL，换成真实管理员邮箱。");
   }
   if (isPlaceholderValue(env.ADMIN_PASSWORD)) {
-    setupWarnings.push("必须执行 wrangler secret put ADMIN_PASSWORD：不要继续使用示例密码。");
+    setupWarnings.push("必须执行 wrangler secret put ADMIN_PASSWORD，不要继续使用示例密码。");
   }
   if (isPlaceholderValue(env.WORKER_ADMIN_PASSWORD)) {
-    setupWarnings.push("必须执行 wrangler secret put WORKER_ADMIN_PASSWORD：主项目兼容接口会用到它。");
+    setupWarnings.push("必须执行 wrangler secret put WORKER_ADMIN_PASSWORD，主项目兼容接口会用到它。");
   }
 
   const warningPanel = setupWarnings.length ? `
       <section class="card section warning-panel">
         <h2>部署前必须修改</h2>
-        <p class="hint">下面这些项如果不改，Worker 可以部署成功，但邮箱功能不会正常工作。</p>
+        <p class="hint">下面这些配置如果不改，Worker 可能能部署成功，但邮箱功能不会正常工作。</p>
         <ul class="warning-list">
           ${setupWarnings.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}
         </ul>
@@ -52,7 +51,7 @@ export function renderAdminPage(env) {
   ` : "";
 
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -73,7 +72,7 @@ export function renderAdminPage(env) {
     * { box-sizing: border-box; }
     body {
       margin: 0;
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: "Microsoft YaHei", "PingFang SC", "Noto Sans SC", sans-serif;
       color: var(--text);
       background:
         radial-gradient(circle at top left, rgba(56, 189, 248, 0.18), transparent 28%),
@@ -125,7 +124,7 @@ export function renderAdminPage(env) {
     .sub {
       margin: 0;
       color: var(--muted);
-      line-height: 1.6;
+      line-height: 1.7;
       max-width: 60ch;
     }
     .stats {
@@ -169,7 +168,7 @@ export function renderAdminPage(env) {
       margin: 0 0 18px;
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.6;
+      line-height: 1.7;
     }
     .field {
       margin-bottom: 14px;
@@ -314,101 +313,101 @@ export function renderAdminPage(env) {
     ${warningPanel}
     <section class="hero">
       <div class="card hero-main">
-        <span class="eyebrow">Cloud Mail Bridge</span>
+        <span class="eyebrow">Cloud Mail 邮箱桥接</span>
         <h1>${title}</h1>
         <p class="sub">
-          A Cloudflare Worker mailbox bridge that supports Cloud Mail style admin APIs,
-          the original Worker OTP polling mode, and DuckMail-compatible endpoints used by the main project.
+          这是一个部署在 Cloudflare Worker 上的邮箱桥接服务，同时兼容 Cloud Mail 管理接口、
+          原项目验证码轮询接口，以及主项目使用的 DuckMail 兼容接口。
         </p>
         <div class="stats">
           <div class="stat">
-            <span class="k">Recommended base URL</span>
-            <span class="v" id="baseUrlValue">Loading...</span>
+            <span class="k">推荐访问地址</span>
+            <span class="v" id="baseUrlValue">加载中...</span>
           </div>
           <div class="stat">
-            <span class="k">Default domain</span>
+            <span class="k">默认域名</span>
             <span class="v">${defaultDomain}</span>
           </div>
           <div class="stat">
-            <span class="k">Project modes</span>
+            <span class="k">兼容模式</span>
             <span class="v">Worker + DuckMail + Cloud Mail</span>
           </div>
         </div>
       </div>
       <div class="card hero-side">
-        <h2 style="margin:0 0 10px">Main project mapping</h2>
+        <h2 style="margin:0 0 10px">主项目对接</h2>
         <p class="hint">
-          For the existing project, you can point both \`duckmail_api_base\` and \`worker_url\` to this Worker.
-          The Worker provides all required compatibility endpoints.
+          当前项目里，你可以把 <code>duckmail_api_base</code> 和 <code>worker_url</code> 都指向这个 Worker。
+          这套服务已经提供了项目所需的兼容接口。
         </p>
-        <div class="result-box">Child flow:
+        <div class="result-box">子号流程：
 config.json
-- duckmail_api_base = this Worker URL
-- duckmail_domain = your routed mail domain
-- duckmail_bearer = generated token or worker admin password
+- duckmail_api_base = 当前 Worker 地址
+- duckmail_domain = 你的真实邮箱域名
+- duckmail_bearer = 生成的 Token 或 Worker 管理密码
 
-Parent flow:
+母号流程：
 team_register/config.json
-- worker_url = this Worker URL
+- worker_url = 当前 Worker 地址
 - email_domains = ["${defaultDomain}"]</div>
       </div>
     </section>
 
     <section class="grid">
       <div class="card section">
-        <h2>1. Generate admin token</h2>
-        <p class="hint">Matches Cloud Mail style: POST /api/public/genToken</p>
+        <h2>1. 生成管理员 Token</h2>
+        <p class="hint">对应 Cloud Mail 风格接口：POST /api/public/genToken</p>
         <div class="row">
           <div class="field">
-            <label>Admin email</label>
+            <label>管理员邮箱</label>
             <input id="adminEmail" type="email" placeholder="admin@example.com">
           </div>
           <div class="field">
-            <label>Admin password</label>
-            <input id="adminPassword" type="password" placeholder="change-me">
+            <label>管理员密码</label>
+            <input id="adminPassword" type="password" placeholder="请输入管理员密码">
           </div>
         </div>
         <div class="actions">
-          <button class="btn-primary" onclick="genToken()">Generate token</button>
-          <button class="btn-ghost" onclick="copyToken()">Copy token</button>
+          <button class="btn-primary" onclick="genToken()">生成 Token</button>
+          <button class="btn-ghost" onclick="copyToken()">复制 Token</button>
         </div>
-        <div class="token-box" id="tokenBox">No token yet.</div>
+        <div class="token-box" id="tokenBox">当前还没有 Token。</div>
       </div>
 
       <div class="card section">
-        <h2>2. Create mailboxes</h2>
-        <p class="hint">Matches Cloud Mail style: POST /api/public/addUser</p>
+        <h2>2. 创建邮箱</h2>
+        <p class="hint">对应 Cloud Mail 风格接口：POST /api/public/addUser</p>
         <div class="field">
-          <label>Mailbox list</label>
+          <label>邮箱列表</label>
           <textarea id="mailboxList" placeholder="alice@${defaultDomain}
-bob@${defaultDomain},optionalPassword"></textarea>
+bob@${defaultDomain},可选密码"></textarea>
         </div>
         <div class="actions">
-          <button class="btn-secondary" onclick="addUsers()">Add users</button>
+          <button class="btn-secondary" onclick="addUsers()">批量创建邮箱</button>
         </div>
-        <div class="result-box" id="addUserResult">No request sent.</div>
+        <div class="result-box" id="addUserResult">尚未发送请求。</div>
       </div>
 
       <div class="card section">
-        <h2>3. Search messages</h2>
-        <p class="hint">Matches Cloud Mail style: POST /api/public/emailList</p>
+        <h2>3. 搜索邮件</h2>
+        <p class="hint">对应 Cloud Mail 风格接口：POST /api/public/emailList</p>
         <div class="row">
           <div class="field">
-            <label>To email</label>
+            <label>收件邮箱</label>
             <input id="filterToEmail" placeholder="%@${defaultDomain}">
           </div>
           <div class="field">
-            <label>Subject</label>
-            <input id="filterSubject" placeholder="%verification%">
+            <label>邮件主题</label>
+            <input id="filterSubject" placeholder="%验证码%">
           </div>
         </div>
         <div class="row">
           <div class="field">
-            <label>Content</label>
+            <label>邮件内容</label>
             <input id="filterContent" placeholder="%123456%">
           </div>
           <div class="field">
-            <label>Page size</label>
+            <label>每页数量</label>
             <select id="filterSize">
               <option value="10">10</option>
               <option value="20" selected>20</option>
@@ -417,63 +416,62 @@ bob@${defaultDomain},optionalPassword"></textarea>
           </div>
         </div>
         <div class="actions">
-          <button class="btn-primary" onclick="searchEmails()">Search</button>
+          <button class="btn-primary" onclick="searchEmails()">搜索邮件</button>
         </div>
       </div>
 
       <div class="card section">
-        <h2>4. Worker-compatible quick test</h2>
-        <p class="hint">Test the original project style OTP polling endpoint: GET /?email=xxx</p>
+        <h2>4. 验证码接口测试</h2>
+        <p class="hint">测试原项目使用的 GET /?email=xxx 验证码轮询接口。</p>
         <div class="field">
-          <label>Email</label>
+          <label>邮箱地址</label>
           <input id="otpEmail" placeholder="alice@${defaultDomain}">
         </div>
         <div class="actions">
-          <button class="btn-primary" onclick="readOtp(false)">Read latest code</button>
-          <button class="btn-ghost" onclick="readOtp(true)">Read and delete</button>
+          <button class="btn-primary" onclick="readOtp(false)">读取最新验证码</button>
+          <button class="btn-ghost" onclick="readOtp(true)">读取并标记删除</button>
         </div>
-        <div class="result-box" id="otpResult">No request sent.</div>
+        <div class="result-box" id="otpResult">尚未发送请求。</div>
       </div>
     </section>
 
     <section class="card section" style="margin-top:18px">
       <div style="display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px">
         <div>
-          <h2 style="margin-bottom:4px">Search results</h2>
-          <p class="hint" style="margin:0">Newest messages are listed first.</p>
+          <h2 style="margin-bottom:4px">邮件结果</h2>
+          <p class="hint" style="margin:0">默认按最新邮件优先显示。</p>
         </div>
-        <span class="pill" id="resultCount">0 rows</span>
+        <span class="pill" id="resultCount">0 条</span>
       </div>
       <div class="table-wrap">
         <table>
           <thead>
             <tr>
               <th>ID</th>
-              <th>To</th>
-              <th>From</th>
-              <th>Subject</th>
-              <th>Time</th>
-              <th>Preview</th>
+              <th>收件人</th>
+              <th>发件人</th>
+              <th>主题</th>
+              <th>时间</th>
+              <th>预览</th>
             </tr>
           </thead>
           <tbody id="resultBody">
-            <tr><td colspan="6" class="muted">No data yet.</td></tr>
+            <tr><td colspan="6" class="muted">暂无数据。</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
     <div class="footer">
-      This Worker stores inbox metadata, messages, and issued mailbox tokens in a single KV namespace.
-      Incoming email is parsed by PostalMime, then exposed through three styles of APIs:
-      Cloud Mail admin endpoints, Worker-compatible inbox endpoints, and DuckMail-compatible endpoints.
+      这套 Worker 会把邮箱账号、邮件正文、邮件索引和签发的邮箱 Token 存到同一个 KV 命名空间里。
+      收件后会先用 PostalMime 解析邮件，再同时对外提供 Cloud Mail、Worker 轮询和 DuckMail 三套接口。
     </div>
   </div>
 
   <script>
     const storageKey = "cloud-mail-bridge-admin-token";
 
-    // 所有表格字段都走同一套转义，避免邮件主题或正文预览插入脚本。
+    // 所有表格字段都统一转义，避免邮件主题或正文预览注入脚本。
     function escapeCellHtml(value) {
       return String(value ?? "")
         .replace(/&/g, "&amp;")
@@ -488,13 +486,13 @@ bob@${defaultDomain},optionalPassword"></textarea>
 
     function setToken(token) {
       localStorage.setItem(storageKey, token);
-      document.getElementById("tokenBox").textContent = token || "No token yet.";
+      document.getElementById("tokenBox").textContent = token || "当前还没有 Token。";
     }
 
     function jsonHeaders(auth = true) {
       const headers = { "Content-Type": "application/json" };
       if (auth && authToken()) {
-        headers["Authorization"] = authToken();
+        headers.Authorization = authToken();
       }
       return headers;
     }
@@ -517,7 +515,9 @@ bob@${defaultDomain},optionalPassword"></textarea>
 
     async function copyToken() {
       const token = authToken();
-      if (!token) return;
+      if (!token) {
+        return;
+      }
       await navigator.clipboard.writeText(token);
     }
 
@@ -558,32 +558,34 @@ bob@${defaultDomain},optionalPassword"></textarea>
       });
       const data = await res.json();
       const rows = Array.isArray(data?.data) ? data.data : [];
-      document.getElementById("resultCount").textContent = rows.length + " rows";
+      document.getElementById("resultCount").textContent = rows.length + " 条";
       const body = document.getElementById("resultBody");
       if (!rows.length) {
-        body.innerHTML = '<tr><td colspan="6" class="muted">No rows found.</td></tr>';
+        body.innerHTML = '<tr><td colspan="6" class="muted">未查询到数据。</td></tr>';
         return;
       }
       body.innerHTML = rows.map((row) => {
         const preview = escapeCellHtml((row.text || row.content || "").slice(0, 120));
-        return '<tr>' +
-          '<td>' + escapeCellHtml(row.emailId) + '</td>' +
-          '<td>' + escapeCellHtml(row.toEmail || "") + '</td>' +
-          '<td>' + escapeCellHtml(row.sendEmail || "") + '</td>' +
-          '<td>' + escapeCellHtml(row.subject || "") + '</td>' +
-          '<td>' + escapeCellHtml(row.createTime || "") + '</td>' +
-          '<td class="small">' + preview + '</td>' +
-        '</tr>';
+        return "<tr>" +
+          "<td>" + escapeCellHtml(row.emailId) + "</td>" +
+          "<td>" + escapeCellHtml(row.toEmail || "") + "</td>" +
+          "<td>" + escapeCellHtml(row.sendEmail || "") + "</td>" +
+          "<td>" + escapeCellHtml(row.subject || "") + "</td>" +
+          "<td>" + escapeCellHtml(row.createTime || "") + "</td>" +
+          '<td class="small">' + preview + "</td>" +
+        "</tr>";
       }).join("");
     }
 
     async function readOtp(deleteAfter) {
       const email = document.getElementById("otpEmail").value.trim();
       const params = new URLSearchParams({ email });
-      if (deleteAfter) params.set("delete", "true");
+      if (deleteAfter) {
+        params.set("delete", "true");
+      }
       const res = await fetch("/?" + params.toString());
       const text = await res.text();
-      document.getElementById("otpResult").textContent = "HTTP " + res.status + "\\n" + text;
+      document.getElementById("otpResult").textContent = "状态码: " + res.status + "\\n" + text;
     }
 
     document.getElementById("baseUrlValue").textContent = location.origin;

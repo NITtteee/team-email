@@ -31,7 +31,7 @@ export default {
       if (pathname === "/health") {
         return jsonResponse({
           ok: true,
-          worker: env.UI_TITLE || "Cloud Mail Bridge",
+          worker: env.UI_TITLE || "Cloud Mail 邮箱桥接",
           defaultDomain: env.DEFAULT_DOMAIN || "",
           configReady: getConfigWarnings(env).length === 0,
           warnings: getConfigWarnings(env),

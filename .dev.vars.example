@@ -13,7 +13,7 @@ ADMIN_PASSWORD=__MUST_CHANGE_TO_ADMIN_PASSWORD__
 WORKER_ADMIN_PASSWORD=__MUST_CHANGE_TO_WORKER_ADMIN_PASSWORD__
 
 # 可选：管理页标题。
-UI_TITLE=Cloud Mail Bridge
+UI_TITLE=Cloud Mail 邮箱桥接
 
 # 注意：KV 不在这个文件里配置。
 # 推荐直接在 Cloudflare Worker 后台绑定变量名 kv。
